@@ -1,0 +1,51 @@
+from ollama import chat
+
+def retrieve(query: str, vectorstore, k: int = 3):
+    """
+    Retrieves relevant text chunks or image descriptions.
+    """
+    results = vectorstore.similarity_search(query, k=k)
+    context = "\n\n".join([doc.page_content for doc in results])
+    return context
+
+def generate_answer(query: str, context: str,preview:str) -> str:
+    """
+    Generates an answer based on the retrieved context (text or image descriptions).
+    """
+    system_prompt = """
+    You are a data visualization assistant.
+
+Your job is to create Vega-Lite JSON specifications that can be rendered using Altair in Python/Streamlit.
+preview of data:
+{preview}
+Rules:
+- DO NOT write or return Python code.
+- DO NOT use `exec()`, `eval()`, or any Python-specific functions.
+- Output ONLY valid Vega-Lite JSON inside a markdown code block.
+- DO NOT use `"data": {"name": "data"}` as the data source placeholder.
+- Do NOT include real data in the JSON.
+- Always use the "mark" key
+- Title the chart and label axes clearly.
+- Use the latest Vega-Lite v5 schema: "https://vega.github.io/schema/vega-lite/v5.json"
+
+Assume the user has uploaded a pandas DataFrame called `df`.
+
+At the end of your response, do NOT include any explanation or notes—ONLY output the chart spec in a code block.
+    If no context is provided, answer conversationally."""
+
+    if context.strip():
+        # Case 1: Context is available (text or image description)
+        user_content = f"Context: {context}\n\nQuestion: {query}"
+    else:
+        # Case 2: No context, just a conversational query
+        user_content = query
+
+    response = chat(
+        model="gemma3:latest",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_content}
+        ]
+    )
+
+    return response["message"]["content"]
