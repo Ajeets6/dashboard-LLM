@@ -1,18 +1,16 @@
-# Multimodal PDF RAG Chatbot
+# DashboardLLM
 
+It generates charts based on the data using Vega-Lite JSON specifications, ensuring safe and efficient visualization without any malicious code execution.
 
-Users can upload a PDF, and the system will intelligently retrieve relevant information from both the text and the visual content to provide accurate, context-aware answers.
-
-![Alt Text](assets/demo.gif)
-
+![Alt Text](assets/dashboard1.PNG)
+![Alt Text](assets/dashboard.PNG)
 
 ## Key Features
 
--   **Multimodal Processing:** Extracts and understands both text and images from PDF files.
--   **Image Understanding:** Utilizes a vision model (LLaVA) to generate rich, semantic descriptions of images, making visual data searchable.
--   **Retrieval-Augmented Generation (RAG):** Employs a vector database (ChromaDB) to find the most relevant text chunks and image descriptions to answer user queries.
+-   **CSV Processing:** Reads and processes data from uploaded CSV files to generate insights.
+-   **Chart Generation:** Creates interactive charts using Vega-Lite JSON specifications, ensuring secure and reliable visualization.
+-   **Retrieval-Augmented Generation (RAG):** Employs a vector database (ChromaDB) to find the most relevant data chunks to answer user queries.
 -   **Local LLMs:** Powered by local language models via Ollama, ensuring privacy and control over the models used.
--   **Interactive UI:** A user-friendly and responsive chat interface built with Streamlit.
 
 ## Tech Stack
 
@@ -20,56 +18,40 @@ Users can upload a PDF, and the system will intelligently retrieve relevant info
 -   **Frontend:** Streamlit
 -   **LLM Serving:** Ollama
 -   **Models:**
-    -   **Generation:** `gemma3:latest` (or any other powerful chat model)
-    -   **Vision:** `gemma3:latest` (for image description)
+    -   **Generation:** `Qwen` (or any other powerful chat model)
     -   **Embeddings:** `granite-embedding:latest`
 -   **Vector Database:** ChromaDB
--   **PDF Processing:** PyMuPDF (`fitz`)
+-   **CSV Processing:** Pandas
 
 ## How It Works
 
-The application follows a two-stage RAG pipeline:
+1. **CSV Upload:** Users upload a CSV file containing structured data.
+2. **Context Retrieval:** Relevant data chunks are retrieved using ChromaDB.
+3. **Chart Generation:** The system generates Vega-Lite JSON specifications based on the data and renders interactive charts.
+4. **Interactive Chat Interface:** Users interact with the chatbot via a Streamlit-based UI.
 
-#### 1. Ingestion Pipeline
-When a user uploads a PDF:
-1.  **Content Extraction:** Text and images are extracted from each page using PyMuPDF.
-2.  **Image Description:** Each extracted image is passed to a vision model (LLaVA) which generates a detailed text description of its content.
-3.  **Chunking:** The extracted text and the generated image descriptions are split into smaller, manageable chunks.
-4.  **Embedding & Storage:** These chunks are converted into vector embeddings and stored in a ChromaDB vector database, creating a searchable knowledge base of the document.
+## Getting Started
 
-#### 2. Retrieval and Generation Pipeline
-When a user asks a question:
-1.  **Query Embedding:** The user's query is converted into a vector embedding.
-2.  **Similarity Search:** The system performs a similarity search in ChromaDB to find the most relevant text chunks and image descriptions.
-3.  **Context-Aware Prompting:** The retrieved context is combined with the original query into a prompt for the final generation model.
-4.  **Answer Generation:** The language model (Gemma) generates a human-like answer based on the provided context.
-5.  **Display:** The answer is streamed back to the user in the chat interface.
-
-## Setup and Installation
-
-1.  **Clone the repository:**
+1. Clone the repository:
     ```bash
-    git clone https://github.com/Ajeets6/multi-modal-RAG.git
-    cd multi-modal-RAG
+    git clone https://github.com/Aeets6/dashboard-LLM.git
+    cd dashboard-LLM
     ```
 
-2.  **Install Python dependencies:**
+2. Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
 
-3.  **Install and Run Ollama:**
-    -   Pull the required models from the command line:
-        ```bash
-        ollama pull gemma3:latest
-        ollama pull granite-embedding:latest
-        ```
+3. Run the application:
+    ```bash
+    streamlit run main.py
+    ```
 
-4.  **Ensure Ollama is running** in the background.
+4. Upload a CSV file and start interacting with the chatbot.
 
-## Usage
+## Security
 
-Run the Streamlit application from your terminal:
-
-```bash
-streamlit run src/main.py
+DashboardLLM ensures safe operation by:
+- Using Vega-Lite JSON specifications for chart generation, eliminating the risk of malicious code execution.
+- Employing local language models for privacy and control.

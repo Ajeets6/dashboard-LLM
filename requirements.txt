@@ -6,3 +6,4 @@ langchain_text_splitters==0.3.8
 ollama==0.5.1
 streamlit==1.46.1
 PyMuPDF
+altair
